@@ -2,9 +2,8 @@ services:
   - type: web
     name: pos-system-api
     runtime: node
-    rootDir: backend
-    buildCommand: npm ci && npm run build
-    startCommand: npm run migrate:up && npm start
+    buildCommand: npm ci && npm --workspace backend run build
+    startCommand: npm --workspace backend run migrate:up && npm --workspace backend run start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -18,15 +17,6 @@ services:
       - key: JWT_REFRESH_SECRET
         generateValue: true
       - key: CORS_ORIGINS
-        sync: false
-  - type: web
-    name: pos-system-dashboard
-    runtime: static
-    rootDir: dashboard
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
-    envVars:
-      - key: VITE_API_BASE_URL
         sync: false
 databases:
   - name: pos-system-db
