@@ -1,0 +1,15 @@
+{
+  "name": "pos-system",
+  "private": true,
+  "workspaces": ["backend", "dashboard", "mobile"],
+  "scripts": {
+    "backend:dev": "npm --workspace backend run dev",
+    "backend:build": "npm --workspace backend run build",
+    "dashboard:dev": "npm --workspace dashboard run dev",
+    "dashboard:build": "npm --workspace dashboard run build",
+    "mobile:start": "npm --workspace mobile run start",
+    "mobile:android": "npm --workspace mobile run android",
+    "build": "npm --workspace backend run build && npm --workspace dashboard run build",
+    "lint": "npm --workspace backend run lint"
+  }
+}

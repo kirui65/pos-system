@@ -1,0 +1,29 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: postgres, POSTGRES_DB: pos_system }
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/pos_system
+      NODE_ENV: test
+      JWT_ACCESS_SECRET: test-access-secret-must-be-long
+      JWT_REFRESH_SECRET: test-refresh-secret-must-be-long
+      CORS_ORIGINS: http://localhost:5173
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm --workspace backend run lint
+      - run: npm --workspace backend run build
+      - run: npm --workspace dashboard run build
+      - run: npm --workspace backend run migrate:up
+      - run: npm --workspace backend run migrate:down
+      - run: npm --workspace backend run migrate:up
